@@ -1,72 +1,76 @@
 # Instrukcja konfiguracji dostępu SSH dla użytkowników w QNAP
 
-Aby umożliwić użytkownikom logowanie się do serwera QNAP przez SSH, należy wykonać poniższe kroki.
+Celem instrukcji jest umożliwienie wybranemu użytkownikowi logowania się do QNAP przez SSH oraz uzyskanie dostępu do odpowiedniego folderu współdzielonego.
 
-### 1. Utworzenie użytkownika i nadanie uprawnień do folderu
+## Utworzenie użytkownika i nadanie uprawnień
 
-1. Zaloguj się do panelu administracyjnego QNAP (QTS).
-2. Przejdź do **Panel sterowania → Uprawnienia → Użytkownicy**.
-3. Utwórz nowego użytkownika lub wybierz istniejącego.
-4. Przejdź do ustawień uprawnień folderów współdzielonych.
-5. Nadaj wybranemu użytkownikowi uprawnienia **Read/Write** do folderu, do którego ma mieć dostęp.
+Zaloguj się do panelu administracyjnego QNAP (QTS).
 
-### 2. Logowanie przez SSH jako administrator
+Przejdź do **Panel sterowania → Uprawnienia → Użytkownicy**.
 
-1. Połącz się z serwerem QNAP przez SSH, używając konta administratora (np. `admin`).
+Utwórz nowego użytkownika lub wybierz istniejącego.
 
-   ```bash
-   ssh admin@ADRES_IP_QNAP
-   ```
+Przejdź do ustawień uprawnień folderów współdzielonych.
 
-2. Po zalogowaniu przejdź do konfiguracji SSH.
+Nadaj użytkownikowi uprawnienia **Read/Write** do odpowiedniego folderu.
 
-### 3. Dodanie użytkownika do konfiguracji SSHD
+## Logowanie przez SSH jako administrator
 
-1. Otwórz plik konfiguracyjny:
+Połącz się z serwerem QNAP przez SSH, używając konta administratora:
 
-   ```bash
-   vi /etc/config/ssh/sshd_config
-   ```
+```bash
+ssh admin@ADRES_IP_QNAP
+```
 
-2. Znajdź parametr `AllowUsers`.
-3. Dodaj nazwę użytkownika do istniejącej listy, oddzielając ją spacją.
+## Pobranie i uruchomienie skryptu
 
-   Przykład:
+Pobierz gotowy skrypt z GitHub:
 
-   ```text
-   AllowUsers admin qnap backupuser nowy_uzytkownik
-   ```
+```bash
+wget https://raw.githubusercontent.com/dimosska/bash-scripts/refs/heads/main/add-ssh-user.sh
+```
 
-4. Sprawdź również plik:
+Nadaj mu uprawnienia do wykonywania:
 
-   ```bash
-   vi /etc/config/ssh/sshd_user_config
-   ```
+```bash
+chmod +x add-ssh-user.sh
+```
 
-5. Jeżeli znajduje się w nim parametr `AllowUsers`, upewnij się, że użytkownik również jest uwzględniony na liście.
+Uruchom skrypt, podając nazwę użytkownika, któremu chcesz nadać dostęp SSH:
 
-**Ważne:** Nie usuwaj istniejących użytkowników z listy `AllowUsers`. Dodaj jedynie nowego użytkownika.
+```bash
+./add-ssh-user.sh nazwa_uzytkownika
+```
 
-### 4. Ponowne uruchomienie usługi SSH przez interfejs WWW
+Skrypt automatycznie dodaje użytkownika do listy `AllowUsers` w plikach:
 
-Po zmianie konfiguracji należy zrestartować usługę SSH.
+- `/etc/config/ssh/sshd_config`
+- `/etc/config/ssh/sshd_user_config`
 
-1. Zaloguj się do interfejsu WWW QTS.
-2. Przejdź do **Panel sterowania → Sieć i usługi plików → Telnet / SSH**.
-3. Wyłącz usługę SSH.
-4. Zastosuj zmiany i poczekaj, aż usługa zostanie wyłączona.
-5. Ponownie włącz usługę SSH.
+## Ponowne uruchomienie usługi SSH przez interfejs WWW
 
-**Ważne:** Restart SSH należy wykonać przez interfejs WWW QTS, poprzez wyłączenie i ponowne włączenie usługi, a nie przez restart procesu z poziomu terminala.
+Po wykonaniu skryptu należy zrestartować usługę SSH.
 
-### 5. Weryfikacja połączenia
+Zaloguj się do interfejsu WWW QTS.
 
-Po ponownym uruchomieniu SSH sprawdź połączenie z nowego konta:
+Przejdź do **Panel sterowania → Sieć i usługi plików → Telnet / SSH**.
+
+Wyłącz usługę SSH.
+
+Poczekaj, aż usługa zostanie wyłączona.
+
+Ponownie włącz usługę SSH.
+
+**Ważne:** Restart SSH należy wykonać przez interfejs WWW QTS, poprzez wyłączenie i ponowne włączenie usługi.
+
+## Weryfikacja połączenia
+
+Sprawdź możliwość zalogowania się z nowego konta:
 
 ```bash
 ssh nazwa_uzytkownika@ADRES_IP_QNAP
 ```
 
-Po zalogowaniu sprawdź, czy użytkownik ma dostęp do odpowiedniego folderu oraz może odczytywać i zapisywać pliki zgodnie z nadanymi uprawnieniami.
+Po zalogowaniu sprawdź dostęp do folderu oraz możliwość odczytu i zapisu plików zgodnie z nadanymi uprawnieniami.
 
-**Uwaga:** Zmiany w plikach konfiguracyjnych SSH na QNAP mogą zostać nadpisane podczas aktualizacji systemu lub restartu urządzenia. Po takich operacjach należy zweryfikować konfigurację.
+**Uwaga:** Skrypt nie tworzy użytkowników QNAP ani nie nadaje uprawnień do folderów. Te czynności należy wykonać wcześniej w interfejsie QTS.
