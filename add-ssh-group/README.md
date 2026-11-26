@@ -18,7 +18,7 @@ Zaloguj się do QNAP przez SSH jako użytkownik z uprawnieniami administratora.
 Pobierz skrypt za pomocą `wget`:
 
 ```bash
-wget -O add-ssh-group.sh https://raw.githubusercontent.com/dimosska/bash-scripts/refs/heads/main/add-ssh-group.sh
+wget -O add-ssh-group.sh https://raw.githubusercontent.com/dimosska/bash-scripts/refs/heads/main/add-ssh-group/add-ssh-group.sh
 ```
 
 Nadaj skryptowi uprawnienia do wykonywania:
