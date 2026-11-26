@@ -27,7 +27,7 @@ ssh admin@ADRES_IP_QNAP
 Pobierz gotowy skrypt z GitHub:
 
 ```bash
-wget https://raw.githubusercontent.com/dimosska/bash-scripts/refs/heads/main/add-ssh-user.sh
+wget https://raw.githubusercontent.com/dimosska/bash-scripts/refs/heads/main/add-ssh-user/add-ssh-user.sh
 ```
 
 Nadaj mu uprawnienia do wykonywania:
